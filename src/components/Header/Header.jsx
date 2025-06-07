@@ -33,22 +33,23 @@ export default function Header() {
                     <ul className='header__nav-list' onClick={closeMenu}>
                         <li>
                             <NavLink
-                                to="/monitoring"
-                                className={({ isActive }) =>
-                                    isActive ? 'header__nav-link header__nav-link--active' : 'header__nav-link'
-                                }
-                            >
-                                Мониторинг
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
                                 to="/reports"
                                 className={({ isActive }) =>
                                     isActive ? 'header__nav-link header__nav-link--active' : 'header__nav-link'
                                 }
                             >
-                                Отчёт
+                                Форма мониторинга
+                            </NavLink>
+                        </li>
+                        
+                        <li>
+                            <NavLink
+                                to="/monitoring"
+                                className={({ isActive }) =>
+                                    isActive ? 'header__nav-link header__nav-link--active' : 'header__nav-link'
+                                }
+                            >
+                                Аналитика
                             </NavLink>
                         </li>
                     </ul>

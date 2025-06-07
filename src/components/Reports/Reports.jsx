@@ -4,7 +4,7 @@ import './Reports.css';
 export default function Reports() {
     return (
         <div className="reports">
-            <SectionHeader title="Создание отчёта и фильтра" />
+            <SectionHeader title="Форма мониторинга" />
 
             <form className="reports__form">
                 <div className="reports__row reports__row--inline">
