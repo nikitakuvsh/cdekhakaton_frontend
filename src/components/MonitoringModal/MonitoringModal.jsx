@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import './MonitoringModal.css';
 
 export default function MonitoringModal({ onClose }) {
   const [forms, setForms] = useState([]);
   const [selectedFormId, setSelectedFormId] = useState(null);
+  const navigate = useNavigate();
 
-  // Загружаем формы из localStorage при монтировании
   useEffect(() => {
     const savedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(savedForms);
@@ -14,9 +15,13 @@ export default function MonitoringModal({ onClose }) {
     }
   }, []);
 
-  // Выбор формы из списка
   const handleSelectForm = (id) => {
     setSelectedFormId(id);
+  };
+
+  const handleEdit = (id) => {
+    onClose();
+    navigate(`/reports/${id}`);
   };
 
   if (forms.length === 0) {
@@ -76,24 +81,51 @@ export default function MonitoringModal({ onClose }) {
                   marginBottom: '10px',
                   padding: '10px 15px',
                   backgroundColor: isActive ? '#e9f5ff' : '#fff',
-                  userSelect: 'none'
+                  userSelect: 'none',
+                  position: 'relative',
                 }}
               >
                 <div className="monitoring-modal__select-button">
                   {form.position}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleEdit(form.id); }}
+                    style={{
+                      marginLeft: '15px',
+                      fontSize: '0.85rem',
+                      padding: '2px 8px',
+                      cursor: 'pointer',
+                      backgroundColor: '#007bff',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                    }}
+                    aria-label={`Редактировать форму ${form.position}`}
+                  >
+                    Редактировать
+                  </button>
                 </div>
-                {isActive && (
-                  <div className="monitoring-modal__form-details">
-                    <p><strong>Описание:</strong> {form.description || '-'}</p>
-                    <p><strong>Территория:</strong> {form.territory || '-'}</p>
-                    <p><strong>Навыки:</strong> {form.skills || '-'}</p>
-                    <p><strong>Возраст:</strong> {form.age || '-'}</p>
-                    <p><strong>Опыт:</strong> {(form.experience && form.experience.length) ? form.experience.join(', ') : '-'}</p>
-                  </div>
-                )}
               </div>
             );
           })}
+        </div>
+
+        <div className="monitoring-modal__form-details" style={{ marginTop: '20px' }}>
+          {selectedFormId && (() => {
+            const form = forms.find(f => f.id === selectedFormId);
+            if (!form) return null;
+
+            return (
+              <div>
+                <p><strong>Название должности:</strong> {form.position}</p>
+                <p><strong>Описание:</strong> {form.description || '-'}</p>
+                <p><strong>Территория:</strong> {form.territory || '-'}</p>
+                <p><strong>Ключевые навыки:</strong> {form.skills || '-'}</p>
+                <p><strong>Возраст:</strong> {form.age || '-'}</p>
+                <p><strong>Опыт:</strong> {form.experience?.length ? form.experience.join(', ') : '-'}</p>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

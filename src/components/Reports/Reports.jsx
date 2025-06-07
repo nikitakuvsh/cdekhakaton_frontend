@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import SectionHeader from '../SectionHeader/SectionHeader';
 import InformationModal from '../InformationModal/InformationModal';
 import './Reports.css';
 
 export default function Reports() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
     const [position, setPosition] = useState('');
     const [description, setDescription] = useState('');
     const [territory, setTerritory] = useState('');
@@ -19,13 +23,33 @@ export default function Reports() {
     useEffect(() => {
         const savedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
         setStoredForms(savedForms);
-    }, []);
+
+        if (id) {
+            const formToEdit = savedForms.find(f => f.id === id);
+            if (formToEdit) {
+                setPosition(formToEdit.position || '');
+                setDescription(formToEdit.description || '');
+                setTerritory(formToEdit.territory || '');
+                setSkills(formToEdit.skills || '');
+                setAge(formToEdit.age || '');
+                setExperience(formToEdit.experience || []);
+            } else {
+                navigate('/reports');
+            }
+        }
+    }, [id, navigate]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!position) {
+            setModalMessage('Название должности обязательно');
+            setShowModal(true);
+            return;
+        }
+
         const newForm = {
-            id: Date.now().toString(),
+            id: id || Date.now().toString(),
             position,
             description,
             territory,
@@ -34,39 +58,48 @@ export default function Reports() {
             experience,
         };
 
-        // Получаем данные из localStorage перед добавлением новой записи
         const savedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
         const isFirstEntry = savedForms.length === 0;
 
-        const updatedForms = [...savedForms, newForm];
+        let updatedForms;
+        if (id) {
+            updatedForms = savedForms.map(f => f.id === id ? newForm : f);
+        } else {
+            updatedForms = [...savedForms, newForm];
+        }
+
         localStorage.setItem('monitoringForms', JSON.stringify(updatedForms));
         setStoredForms(updatedForms);
 
-        setPosition('');
-        setDescription('');
-        setTerritory('');
-        setSkills('');
-        setAge('');
-        setExperience([]);
-
-        setModalMessage('Форма успешно добавлена!');
+        setModalMessage(id ? 'Форма успешно отредактирована!' : 'Форма успешно добавлена!');
         setShowModal(true);
 
-        // Если первая запись — обновить страницу один раз
-        if (isFirstEntry && !sessionStorage.getItem('reloadedOnce')) {
-            sessionStorage.setItem('reloadedOnce', 'true');
+        if (!id && isFirstEntry) {
             setModalMessage('Успех! Страница сейчас перезагрузится :)');
-            setTimeout(() => window.location.reload(), 3000);
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        } else if (id) {
+            setTimeout(() => {
+                setShowModal(false);
+                navigate('/reports');
+            }, 1500);
+        } else {
+            setPosition('');
+            setDescription('');
+            setTerritory('');
+            setSkills('');
+            setAge('');
+            setExperience([]);
         }
     };
 
 
     return (
         <div className="reports">
-            <SectionHeader title="Форма мониторинга" />
+            <SectionHeader title={id ? "Редактировать форму мониторинга" : "Форма мониторинга"} />
 
             <form className="reports__form" onSubmit={handleSubmit}>
-                {/* форма без изменений */}
                 <div className="reports__row reports__row--inline">
                     <button type="button" className="reports__button reports__button--upload">Загрузить отчет</button>
 
@@ -154,7 +187,9 @@ export default function Reports() {
                     </div>
                 </div>
 
-                <button type="submit" className="reports__button reports__button--submit">Загрузить</button>
+                <button type="submit" className="reports__button reports__button--submit">
+                    {id ? "Сохранить изменения" : "Загрузить"}
+                </button>
             </form>
 
             {showModal && (
