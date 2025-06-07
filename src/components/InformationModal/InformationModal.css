@@ -1,0 +1,127 @@
+.info-modal {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  transform: translateX(100%);
+  animation: infoSlideIn 0.5s forwards;
+  min-width: 12%;
+  max-width: 300px;
+  text-align: center;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
+/* Смещение для второго и третьего окна */
+.info-modal:nth-child(2) {
+  top: 90px;
+}
+
+.info-modal:nth-child(3) {
+  top: 160px;
+}
+
+.info-modal__content {
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  position: relative;
+}
+
+.info-modal__close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.info-modal--success {
+  background-color: #4CAF50;
+}
+
+.info-modal--error {
+  background-color: #FF6B6B;
+}
+
+@keyframes infoSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes infoSlideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+    right: 0;
+  }
+}
+
+.info-modal--closing {
+  animation: infoSlideOut 0.5s forwards;
+  overflow: hidden;
+}
+
+/* --- Адаптивность --- */
+
+/* Планшеты (ширина от 768px до 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .info-modal {
+    min-width: 20%;
+    top: 15px;
+    right: 15px;
+  }
+  .info-modal:nth-child(2) {
+    top: 70px;
+  }
+  .info-modal:nth-child(3) {
+    top: 130px;
+  }
+  .info-modal__content {
+    font-size: 14px;
+    padding: 15px;
+  }
+}
+
+/* Мобильные устройства (максимум 767px) */
+@media (max-width: 767px) {
+  .info-modal {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 10px;
+    left: 10px;
+    transform: translateX(0);
+    animation: none; /* Чтобы не было анимации при адаптации */
+    min-width: auto;
+    max-width: none;
+    width: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+  .info-modal:nth-child(2),
+  .info-modal:nth-child(3) {
+    top: auto;
+    bottom: 20px;
+  }
+  .info-modal__content {
+    font-size: 14px;
+    padding: 15px;
+  }
+  .info-modal__close {
+    top: 8px;
+    right: 8px;
+    font-size: 18px;
+  }
+}

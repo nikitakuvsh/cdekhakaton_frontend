@@ -1,0 +1,102 @@
+.monitoring-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.5);
+  padding: 16px;
+  backdrop-filter: blur(4px);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+.monitoring-modal__overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: transparent;
+  z-index: 1000;
+}
+
+.monitoring-modal__content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 32px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  z-index: 1010;
+}
+
+.monitoring-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.monitoring-modal__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.monitoring-modal__close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  color: #666;
+  transition: color 0.25s ease;
+}
+
+.monitoring-modal__close-btn:hover {
+  color: #007bff;
+}
+
+.monitoring-modal__form-block {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.monitoring-modal__select-button {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #222;
+  user-select: none;
+}
+
+.monitoring-modal__form-details {
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 3px solid #007acc;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .monitoring-modal__content {
+    padding: 16px 20px;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 8px;
+  }
+
+  .monitoring-modal__title {
+    font-size: 1.25rem;
+  }
+
+  .monitoring-modal__close-btn {
+    font-size: 1.5rem;
+  }
+
+  .monitoring-modal__select-button {
+    font-size: 1rem;
+  }
+}
