@@ -8,9 +8,7 @@ export default function Reports() {
 
             <form className="reports__form">
                 <div className="reports__row reports__row--inline">
-                    <button type="button" className="reports__button reports__button--upload">
-                        Загрузить ответ
-                    </button>
+                    <button type="button" className="reports__button reports__button--upload">Загрузить отчет</button>
 
                     <div className="reports__field">
                         <input
@@ -20,9 +18,7 @@ export default function Reports() {
                             placeholder=" "
                             autoComplete="off"
                         />
-                        <label htmlFor="position" className="reports__label">
-                            Название должности
-                        </label>
+                        <label htmlFor="position" className="reports__label">Название должности</label>
                     </div>
                 </div>
 
@@ -33,9 +29,7 @@ export default function Reports() {
                         placeholder=" "
                         rows={4}
                     />
-                    <label htmlFor="description" className="reports__label">
-                        Описание
-                    </label>
+                    <label htmlFor="description" className="reports__label">Описание</label>
                 </div>
 
                 <div className="reports__row reports__row--grid">
@@ -46,9 +40,7 @@ export default function Reports() {
                             placeholder=" "
                             autoComplete="off"
                         />
-                        <label htmlFor="territory" className="reports__label">
-                            Территория
-                        </label>
+                        <label htmlFor="territory" className="reports__label">Территория</label>
                     </div>
 
                     <div className="reports__field">
@@ -58,9 +50,7 @@ export default function Reports() {
                             placeholder=" "
                             autoComplete="off"
                         />
-                        <label htmlFor="skills" className="reports__label">
-                            Ключевые навыки
-                        </label>
+                        <label htmlFor="skills" className="reports__label">Ключевые навыки</label>
                     </div>
 
                     <div className="reports__field">
@@ -70,9 +60,7 @@ export default function Reports() {
                             placeholder=" "
                             autoComplete="off"
                         />
-                        <label htmlFor="age" className="reports__label">
-                            Возраст
-                        </label>
+                        <label htmlFor="age" className="reports__label">Возраст</label>
                     </div>
 
                     <div className="reports__field">
@@ -82,15 +70,11 @@ export default function Reports() {
                             placeholder=" "
                             autoComplete="off"
                         />
-                        <label htmlFor="experience" className="reports__label">
-                            Опыт работы
-                        </label>
+                        <label htmlFor="experience" className="reports__label">Опыт работы</label>
                     </div>
                 </div>
 
-                <button type="submit" className="reports__button reports__button--submit">
-                    Загрузить
-                </button>
+                <button type="submit" className="reports__button reports__button--submit">Загрузить</button>
             </form>
         </div>
     );
