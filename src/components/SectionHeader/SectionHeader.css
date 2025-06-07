@@ -1,0 +1,29 @@
+.section-header {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+}
+
+.section-header__title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.section-header__divider {
+    border: none;
+    border-top: 2px solid #ccc;
+    margin-top: 10px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .section-header__title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-header__title {
+        font-size: 1.5rem;
+    }
+}

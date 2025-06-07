@@ -1,0 +1,48 @@
+.monitoring {
+    padding: 2rem;
+}
+
+.monitoring__controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.monitoring__toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.monitoring__toggle-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.monitoring__info-group {
+    display: flex;
+    gap: 1rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.monitoring__info-item {
+    font-weight: 500;
+}
+
+.monitoring__content {
+    min-height: 200px;
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .monitoring {
+        padding: 10px;
+        padding-top: 2rem;
+    }
+}

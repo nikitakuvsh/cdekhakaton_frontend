@@ -1,7 +1,59 @@
 import './Header.css';
+import logoTeam from '../../images/pictures/logo-team.svg';
+import logoCompany from '../../images/pictures/logo-company.svg';
+import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
 
-export default function Header(){
+export default function Header() {
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
+
+    const closeMenu = () => {
+        setMenuOpen(false);
+    };
+
     return (
-        <header className='header'></header>
+        <header className='header'>
+            <div className='header__content'>
+                <div className='header__logo'>
+                    <img className='header__logo-picture logo--team' src={logoTeam} alt='Логотип команды' title='Лидеры' />
+                    <img className='header__logo-picture logo--company' src={logoCompany} alt='Логотип компании' title='СДЕК' />
+                </div>
+
+                <button className={`burger ${menuOpen ? 'burger--open' : ''}`} onClick={toggleMenu} aria-label="Меню">
+                    <span />
+                    <span />
+                    <span />
+                </button>
+
+                <nav className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}>
+                    <ul className='header__nav-list' onClick={closeMenu}>
+                        <li>
+                            <NavLink
+                                to="/monitoring"
+                                className={({ isActive }) =>
+                                    isActive ? 'header__nav-link header__nav-link--active' : 'header__nav-link'
+                                }
+                            >
+                                Мониторинг
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/reports"
+                                className={({ isActive }) =>
+                                    isActive ? 'header__nav-link header__nav-link--active' : 'header__nav-link'
+                                }
+                            >
+                                Отчёт
+                            </NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
     );
 }
