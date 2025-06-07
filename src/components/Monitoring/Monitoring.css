@@ -45,4 +45,12 @@
         padding: 10px;
         padding-top: 2rem;
     }
+
+    .monitoring__info-item {
+        font-size: 12px;
+    }
+
+    .monitoring__controls {
+        gap: 0.3rem;
+    }
 }
