@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-// Компоненты
 import buttonIcon from '../../images/icons/monitoring-button.svg';
 import SectionHeader from '../../components/SectionHeader/SectionHeader';
 import MonitoringModal from '../MonitoringModal/MonitoringModal';
 
-// Стили
 import './Monitoring.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_API || 'http://127.0.0.1:8000';
 
 export default function Monitoring() {
   const navigate = useNavigate();
@@ -15,13 +15,39 @@ export default function Monitoring() {
   const [countVacancies, setCountVacancies] = useState(12);
   const [countCandidats, setCountCadidats] = useState(8);
   const [openMonitoringModal, setOpenMonitoringModal] = useState(false);
-
   const [forms, setForms] = useState([]);
+  const [chartSrc, setChartSrc] = useState(null); // сюда вставим base64 картинку
+
+  function joinUrl(base, path) {
+    return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+  }
 
   useEffect(() => {
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(storedForms);
   }, []);
+
+  useEffect(() => {
+    if (forms.length > 0) {
+      const position = forms[0].position || 'Веб-разработчик';
+
+      fetch(
+        `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(position)}&area=1&per_page=50&refresh=false&include_plots=true`,
+        { headers: { accept: 'application/json' } }
+      )
+      
+        .then(res => res.json())
+        .then(data => {
+          if (data?.plot_images?.salary_distribution) {
+            setChartSrc(`data:image/png;base64,${data.plot_images.salary_distribution}`);
+            setCountVacancies(data.vacancy_count || 0);
+          }
+        })
+        .catch(err => {
+          console.error('Ошибка при получении статистики:', err);
+        });
+    }
+  }, [forms]);
 
   const openModal = () => {
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
@@ -62,7 +88,15 @@ export default function Monitoring() {
       </div>
 
       <div className='monitoring__content'>
-        {/* ... */}
+        {chartSrc ? (
+          <img
+            src={chartSrc}
+            alt="График распределения зарплат"
+            className="monitoring__chart"
+          />
+        ) : (
+          <p>Загрузка графика...</p>
+        )}
       </div>
 
       {openMonitoringModal && (
