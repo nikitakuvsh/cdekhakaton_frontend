@@ -19,6 +19,7 @@ export default function Monitoring() {
   const [salaryStats, setSalaryStats] = useState(null);
   const [topKeywords, setTopKeywords] = useState(null);
   const [topDescriptionWords, setTopDescriptionWords] = useState(null);
+  const [hasError, setHasError] = useState(false);
 
   // Для анимации текста загрузки
   const loadingTexts = [
@@ -62,6 +63,7 @@ export default function Monitoring() {
       })
       .catch(err => {
         console.error('Ошибка при получении статистики:', err);
+        setHasError(true);
       });
 
   }, [selectedPosition]);
@@ -105,9 +107,21 @@ export default function Monitoring() {
     ],
   }));
 
+  if (hasError) {
+    return (
+      <div className="monitoring monitoring--error">
+        <div className="monitoring__error">
+          <div className="monitoring__error-emoji">😔</div>
+          <p className="monitoring__error-text">Произошла какая-то ошибка</p>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <div className='monitoring'>
-      <SectionHeader title="Аналитика" />
+      <SectionHeader title={`Аналитика ${selectedPosition ? `вакансии: ${selectedPosition.toLowerCase()} ` : ''}`} />
 
       <div className='monitoring__controls'>
         <button

@@ -240,6 +240,36 @@
   animation: shimmer 1.5s infinite;
 }
 
+.monitoring--error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  flex-direction: column;
+  text-align: center;
+}
+
+.monitoring__error-emoji {
+  font-size: 120px;
+  animation: shake 2.5s infinite alternate;
+  transform-origin: center;
+}
+
+.monitoring__error-text {
+  font-size: 20px;
+  color: #777;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+@keyframes shake {
+  0%   { transform: rotate(0deg); }
+  40%  { transform: rotate(3deg); }
+  60%  { transform: rotate(1deg); }
+  80%  { transform: rotate(0.3deg); }
+  100% { transform: rotate(0deg); }
+}
+
 @keyframes shimmer {
   0% {
     left: -150px;
