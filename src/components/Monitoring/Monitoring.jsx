@@ -17,7 +17,11 @@ export default function Monitoring() {
   const [openMonitoringModal, setOpenMonitoringModal] = useState(false);
   const [forms, setForms] = useState([]);
   const [selectedPosition, setSelectedPosition] = useState(null);
-  const [chartSrc, setChartSrc] = useState(null); // base64 картинки графика
+  const [chartImages, setChartImages] = useState([]);
+  const [salaryStats, setSalaryStats] = useState(null);
+  const [topKeywords, setTopKeywords] = useState(null);
+  const [topDescriptionWords, setTopDescriptionWords] = useState(null);
+
 
   // Для анимации текста загрузки
   const loadingTexts = [
@@ -36,25 +40,35 @@ export default function Monitoring() {
 
   // При смене выбранной позиции загружаем график
   useEffect(() => {
-    if (!selectedPosition) return;
+  if (!selectedPosition) return;
 
-    setChartSrc(null);  // сбросить картинку, чтобы показать загрузку
+  setChartImages([]);  // сбросить перед загрузкой
 
-    fetch(
-      `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
-      { headers: { accept: 'application/json' } }
-    )
-      .then(res => res.json())
-      .then(data => {
-        if (data?.plot_images?.salary_distribution) {
-          setChartSrc(`data:image/png;base64,${data.plot_images.salary_distribution}`);
-          setCountVacancies(data.vacancy_count || 0);
-        }
-      })
-      .catch(err => {
-        console.error('Ошибка при получении статистики:', err);
-      });
-  }, [selectedPosition]);
+  fetch(
+    `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
+    { headers: { accept: 'application/json' } }
+  )
+    .then(res => res.json())
+    .then(data => {
+      if (data?.plot_images) {
+        const images = Object.entries(data.plot_images).map(([name, base64]) => ({
+          name,
+          src: `data:image/png;base64,${base64}`
+        }));
+        setChartImages(images);
+      }
+
+      setCountVacancies(data.vacancy_count || 0);
+      setSalaryStats(data.salary_stats || null);
+      setTopKeywords(data.top_keywords || null);
+      setTopDescriptionWords(data.top_description_words || null);
+    })
+    .catch(err => {
+      console.error('Ошибка при получении статистики:', err);
+    });
+
+}, [selectedPosition]);
+
 
   // Загрузка форм из localStorage при монтировании
   useEffect(() => {
@@ -68,7 +82,7 @@ export default function Monitoring() {
 
   // Анимация смены текста загрузки
   useEffect(() => {
-    if (chartSrc) return; // остановить анимацию, когда график загружен
+    if (chartImages.length > 0) return; // остановить анимацию, когда график загружен
 
     const interval = setInterval(() => {
       setFade(false); // начинаем исчезать текст
@@ -79,7 +93,7 @@ export default function Monitoring() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [chartSrc, loadingTexts.length]);
+  }, [chartImages.length, loadingTexts.length]);
 
   const openModal = () => {
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
@@ -119,21 +133,25 @@ export default function Monitoring() {
       </div>
 
       <div className='monitoring__content'>
-        {chartSrc ? (
-          <img
-            src={chartSrc}
-            alt="График распределения зарплат"
-            className="monitoring__chart"
-          />
-        ) : (
-          <div className='loading__container'>
-            <div className="monitoring__spinner" aria-label="Загрузка графика"></div>
-            <span className={`loading-text ${fade ? 'fade-in' : 'fade-out'}`}>
-              {loadingTexts[loadingTextIndex]}
-            </span>
-          </div>
-        )}
-      </div>
+  {chartImages.length > 0 ? (
+    chartImages.map((img, idx) => (
+      <img
+        key={img.name || idx}
+        src={img.src}
+        alt={`График: ${img.name}`}
+        className='monitoring__chart'
+      />
+    ))
+  ) : (
+    <div className='loading__container'>
+      <div className="monitoring__spinner" aria-label="Загрузка графика"></div>
+      <span className={`loading-text ${fade ? 'fade-in' : 'fade-out'}`}>
+        {loadingTexts[loadingTextIndex]}
+      </span>
+    </div>
+  )}
+</div>
+
 
       {openMonitoringModal && (
         <MonitoringModal
@@ -141,6 +159,86 @@ export default function Monitoring() {
           onClose={() => setOpenMonitoringModal(false)}
           onSelectPosition={(position) => setSelectedPosition(position)}
         />
+      )}
+
+      {salaryStats && chartImages.length > 0 ? (
+        <div className='monitoring__section'>
+          <h3 className='monitoring__subtitle'>💰 Статистика зарплат</h3>
+          <div className='monitoring__cards'>
+            <div className='monitoring__card'>
+              <span className='monitoring__card-label'>Минимум</span>
+              <span className='monitoring__card-value'>{salaryStats.min} ₽</span>
+            </div>
+            <div className='monitoring__card'>
+              <span className='monitoring__card-label'>Максимум</span>
+              <span className='monitoring__card-value'>{salaryStats.max} ₽</span>
+            </div>
+            <div className='monitoring__card'>
+              <span className='monitoring__card-label'>Средняя</span>
+              <span className='monitoring__card-value'>{salaryStats.mean} ₽</span>
+            </div>
+            <div className='monitoring__card'>
+              <span className='monitoring__card-label'>Медианная</span>
+              <span className='monitoring__card-value'>{salaryStats.median} ₽</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className='monitoring__section skeleton-section'>
+          <h3 className='monitoring__subtitle'>Статистика зарплат</h3>
+          <div className='skeleton-cards'>
+            {[...Array(4)].map((_, i) => (
+              <div className='skeleton-card' key={i}>
+                <div className='skeleton-block' style={{ width: '80px' }}></div>
+                <div className='skeleton-block' style={{ width: '60px' }}></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {topKeywords && chartImages.length > 0 ? (
+        <div className='monitoring__section'>
+          <h3 className='monitoring__subtitle'>Топ ключевые слова</h3>
+          <div className='monitoring__tags'>
+            {Object.entries(topKeywords).map(([word, count]) => (
+              <div className='monitoring__tag' key={word}>
+                {word} <span className='monitoring__tag-count'>×{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className='monitoring__section skeleton-section'>
+          <h3 className='monitoring__subtitle'>Топ ключевые слова</h3>
+          <div className='monitoring__tags'>
+            {[...Array(8)].map((_, i) => (
+              <div className='skeleton-block skeleton-tag' key={i}></div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {topDescriptionWords && chartImages.length > 0 ? (
+        <div className='monitoring__section'>
+          <h3 className='monitoring__subtitle'>Частые слова в описаниях</h3>
+          <div className='monitoring__tags'>
+            {Object.entries(topDescriptionWords).map(([word, count]) => (
+              <div className='monitoring__tag' key={word}>
+                {word} <span className='monitoring__tag-count'>×{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className='monitoring__section skeleton-section'>
+          <h3 className='monitoring__subtitle'>Частые слова в описаниях</h3>
+          <div className='monitoring__tags'>
+            {[...Array(8)].map((_, i) => (
+              <div className='skeleton-block skeleton-tag' key={i}></div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

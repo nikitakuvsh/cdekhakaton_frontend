@@ -10,13 +10,13 @@ export default function MonitoringModal({ forms: initialForms = [], onClose, onS
   useEffect(() => {
     const savedForms = initialForms.length > 0 ? initialForms : JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(savedForms);
-  
+
     // Сначала пытаемся получить последний выбранный id из localStorage
     const savedSelectedId = localStorage.getItem('selectedFormId');
-  
+
     // Проверяем, что savedSelectedId есть и он есть в savedForms
     const exists = savedSelectedId && savedForms.some(f => String(f.id) === savedSelectedId);
-  
+
     if (exists) {
       setSelectedFormId(savedSelectedId);
       const selectedForm = savedForms.find(f => String(f.id) === savedSelectedId);
@@ -28,19 +28,19 @@ export default function MonitoringModal({ forms: initialForms = [], onClose, onS
       setSelectedFormId(null);
     }
   }, [initialForms, onSelectPosition]);
-  
-  
+
+
 
   const handleSelectForm = (id) => {
     setSelectedFormId(id);
     localStorage.setItem('selectedFormId', id);
-  
+
     const selectedForm = forms.find(f => f.id === id);
     if (selectedForm && onSelectPosition) {
-      onSelectPosition(selectedForm.position);
+      onSelectPosition(selectedForm.position); // 🔄 Триггер загрузки и скелетонов
     }
   };
-  
+
   const handleEdit = (id) => {
     onClose();
     navigate(`/reports/${id}`);

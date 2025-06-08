@@ -81,6 +81,144 @@
     opacity: 1;
 }
 
+.monitoring__section {
+  margin-top: 32px;
+}
+
+.monitoring__subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.monitoring__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.monitoring__card {
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.monitoring__card-label {
+  display: block;
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.monitoring__card-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.monitoring__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.monitoring__tag {
+  background-color: #eef2f7;
+  color: #333;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.monitoring__tag-count {
+  margin-left: 6px;
+  color: #666;
+  font-size: 13px;
+}
+
+.skeleton-block {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  height: 20px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(to right, transparent 0%, #f0f0f0 50%, transparent 100%);
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-section {
+  margin-top: 32px;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 120px;
+}
+
+.skeleton-cards {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.skeleton-tag {
+  width: 80px;
+  height: 24px;
+  margin: 4px;
+  border-radius: 12px;
+}
+
+/* Скелетон-блок */
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 300px; /* высота графика */
+  margin-bottom: 16px;
+}
+
+/* Анимация shimmer */
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(to right, transparent 0%, #f0f0f0 50%, transparent 100%);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -150px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 
 @media (max-width: 768px) {
     .monitoring {
