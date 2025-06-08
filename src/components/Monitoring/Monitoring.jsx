@@ -13,9 +13,10 @@ export default function Monitoring() {
   const navigate = useNavigate();
   const [countFilters, setCountFilters] = useState(5);
   const [countVacancies, setCountVacancies] = useState(12);
-  const [countCandidats, setCountCadidats] = useState(8);
+  const [countCandidats, setCountCandidats] = useState(8);
   const [openMonitoringModal, setOpenMonitoringModal] = useState(false);
   const [forms, setForms] = useState([]);
+  const [selectedPosition, setSelectedPosition] = useState(null);
   const [chartSrc, setChartSrc] = useState(null); // сюда вставим base64 картинку
 
   function joinUrl(base, path) {
@@ -23,31 +24,34 @@ export default function Monitoring() {
   }
 
   useEffect(() => {
+    // Загружаем формы из localStorage при монтировании
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(storedForms);
+
+    if (storedForms.length > 0) {
+      // Устанавливаем позицию из первой формы при загрузке
+      setSelectedPosition(storedForms[0].position);
+    }
   }, []);
 
   useEffect(() => {
-    if (forms.length > 0) {
-      const position = forms[0].position || 'Веб-разработчик';
+    if (!selectedPosition) return;
 
-      fetch(
-        `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(position)}&area=1&per_page=50&refresh=false&include_plots=true`,
-        { headers: { accept: 'application/json' } }
-      )
-      
-        .then(res => res.json())
-        .then(data => {
-          if (data?.plot_images?.salary_distribution) {
-            setChartSrc(`data:image/png;base64,${data.plot_images.salary_distribution}`);
-            setCountVacancies(data.vacancy_count || 0);
-          }
-        })
-        .catch(err => {
-          console.error('Ошибка при получении статистики:', err);
-        });
-    }
-  }, [forms]);
+    fetch(
+      `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
+      { headers: { accept: 'application/json' } }
+    )
+      .then(res => res.json())
+      .then(data => {
+        if (data?.plot_images?.salary_distribution) {
+          setChartSrc(`data:image/png;base64,${data.plot_images.salary_distribution}`);
+          setCountVacancies(data.vacancy_count || 0);
+        }
+      })
+      .catch(err => {
+        console.error('Ошибка при получении статистики:', err);
+      });
+  }, [selectedPosition]);
 
   const openModal = () => {
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
@@ -55,9 +59,9 @@ export default function Monitoring() {
     setOpenMonitoringModal(true);
   };
 
+  // Преобразуем формы для передачи в модалку, если нужно
   const modalForms = forms.map(form => ({
-    id: form.id,
-    position: form.position,
+    ...form,
     options: [
       { id: 'active', label: 'Активна', checked: true },
     ],
@@ -103,6 +107,7 @@ export default function Monitoring() {
         <MonitoringModal
           forms={modalForms}
           onClose={() => setOpenMonitoringModal(false)}
+          onSelectPosition={(position) => setSelectedPosition(position)} // передаем колбэк для обновления позиции
         />
       )}
     </div>

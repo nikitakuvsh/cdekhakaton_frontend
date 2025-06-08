@@ -2,23 +2,45 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import './MonitoringModal.css';
 
-export default function MonitoringModal({ onClose }) {
+export default function MonitoringModal({ forms: initialForms = [], onClose, onSelectPosition }) {
   const [forms, setForms] = useState([]);
   const [selectedFormId, setSelectedFormId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
+    const savedForms = initialForms.length > 0 ? initialForms : JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(savedForms);
-    if (savedForms.length > 0) {
+  
+    // Сначала пытаемся получить последний выбранный id из localStorage
+    const savedSelectedId = localStorage.getItem('selectedFormId');
+  
+    // Проверяем, что savedSelectedId есть и он есть в savedForms
+    const exists = savedSelectedId && savedForms.some(f => String(f.id) === savedSelectedId);
+  
+    if (exists) {
+      setSelectedFormId(savedSelectedId);
+      const selectedForm = savedForms.find(f => String(f.id) === savedSelectedId);
+      onSelectPosition && onSelectPosition(selectedForm.position);
+    } else if (savedForms.length > 0) {
       setSelectedFormId(savedForms[0].id);
+      onSelectPosition && onSelectPosition(savedForms[0].position);
+    } else {
+      setSelectedFormId(null);
     }
-  }, []);
+  }, [initialForms, onSelectPosition]);
+  
+  
 
   const handleSelectForm = (id) => {
     setSelectedFormId(id);
+    localStorage.setItem('selectedFormId', id);
+  
+    const selectedForm = forms.find(f => f.id === id);
+    if (selectedForm && onSelectPosition) {
+      onSelectPosition(selectedForm.position);
+    }
   };
-
+  
   const handleEdit = (id) => {
     onClose();
     navigate(`/reports/${id}`);
