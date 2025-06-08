@@ -82,7 +82,7 @@ export default function Reports() {
         } else if (id) {
             setTimeout(() => {
                 setShowModal(false);
-                navigate('/reports');
+                navigate('/monitoring');
             }, 1500);
         } else {
             setPosition('');

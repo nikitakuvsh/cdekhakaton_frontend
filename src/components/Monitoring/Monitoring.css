@@ -262,6 +262,23 @@
   font-weight: bold;
 }
 
+.monitoring__error-button {
+    margin-top: 10px;
+    border: none;
+    background-color: #007bff;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ededed;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.monitoring__error-button:hover {
+    background-color: #0072eb;
+}
+
 @keyframes shake {
   0%   { transform: rotate(0deg); }
   40%  { transform: rotate(3deg); }

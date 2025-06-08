@@ -113,6 +113,7 @@ export default function Monitoring() {
         <div className="monitoring__error">
           <div className="monitoring__error-emoji">😔</div>
           <p className="monitoring__error-text">Произошла какая-то ошибка</p>
+          <button className='monitoring__error-button button--reload' onClick={() => window.location.reload()}>Перезагрузить</button>
         </div>
       </div>
     );
