@@ -17,25 +17,28 @@ export default function Monitoring() {
   const [openMonitoringModal, setOpenMonitoringModal] = useState(false);
   const [forms, setForms] = useState([]);
   const [selectedPosition, setSelectedPosition] = useState(null);
-  const [chartSrc, setChartSrc] = useState(null); // сюда вставим base64 картинку
+  const [chartSrc, setChartSrc] = useState(null); // base64 картинки графика
+
+  // Для анимации текста загрузки
+  const loadingTexts = [
+    "Хантим :)",
+    "Скоро всё будет готово",
+    "Ищем подходящие вакансии...",
+    "Загружаем данные...",
+    "Это займёт несколько секунд"
+  ];
+  const [loadingTextIndex, setLoadingTextIndex] = useState(0);
+  const [fade, setFade] = useState(true);
 
   function joinUrl(base, path) {
     return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
   }
 
-  useEffect(() => {
-    // Загружаем формы из localStorage при монтировании
-    const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
-    setForms(storedForms);
-
-    if (storedForms.length > 0) {
-      // Устанавливаем позицию из первой формы при загрузке
-      setSelectedPosition(storedForms[0].position);
-    }
-  }, []);
-
+  // При смене выбранной позиции загружаем график
   useEffect(() => {
     if (!selectedPosition) return;
+
+    setChartSrc(null);  // сбросить картинку, чтобы показать загрузку
 
     fetch(
       `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
@@ -53,13 +56,37 @@ export default function Monitoring() {
       });
   }, [selectedPosition]);
 
+  // Загрузка форм из localStorage при монтировании
+  useEffect(() => {
+    const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
+    setForms(storedForms);
+
+    if (storedForms.length > 0) {
+      setSelectedPosition(storedForms[0].position);
+    }
+  }, []);
+
+  // Анимация смены текста загрузки
+  useEffect(() => {
+    if (chartSrc) return; // остановить анимацию, когда график загружен
+
+    const interval = setInterval(() => {
+      setFade(false); // начинаем исчезать текст
+      setTimeout(() => {
+        setLoadingTextIndex((prev) => (prev + 1) % loadingTexts.length);
+        setFade(true);  // показываем следующий текст
+      }, 500);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [chartSrc, loadingTexts.length]);
+
   const openModal = () => {
     const storedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
     setForms(storedForms);
     setOpenMonitoringModal(true);
   };
 
-  // Преобразуем формы для передачи в модалку, если нужно
   const modalForms = forms.map(form => ({
     ...form,
     options: [
@@ -99,7 +126,12 @@ export default function Monitoring() {
             className="monitoring__chart"
           />
         ) : (
-          <p>Загрузка графика...</p>
+          <div className='loading__container'>
+            <div className="monitoring__spinner" aria-label="Загрузка графика"></div>
+            <span className={`loading-text ${fade ? 'fade-in' : 'fade-out'}`}>
+              {loadingTexts[loadingTextIndex]}
+            </span>
+          </div>
         )}
       </div>
 
@@ -107,7 +139,7 @@ export default function Monitoring() {
         <MonitoringModal
           forms={modalForms}
           onClose={() => setOpenMonitoringModal(false)}
-          onSelectPosition={(position) => setSelectedPosition(position)} // передаем колбэк для обновления позиции
+          onSelectPosition={(position) => setSelectedPosition(position)}
         />
       )}
     </div>

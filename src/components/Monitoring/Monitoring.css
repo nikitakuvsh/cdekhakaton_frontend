@@ -40,6 +40,48 @@
     padding: 1rem;
 }
 
+.monitoring__spinner {
+    margin: 40px auto;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #cfd0d1;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading__container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.loading-text {
+    display: inline-block;
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: opacity 0.5s ease;
+    opacity: 1;
+    user-select: none;
+}
+
+.loading-text.fade-out {
+    opacity: 0;
+}
+
+.loading-text.fade-in {
+    opacity: 1;
+}
+
+
 @media (max-width: 768px) {
     .monitoring {
         padding: 10px;
