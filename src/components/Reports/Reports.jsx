@@ -18,11 +18,11 @@ export default function Reports() {
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
-    const [storedForms, setStoredForms] = useState([]);
+    // const [storedForms, setStoredForms] = useState([]);
 
     useEffect(() => {
         const savedForms = JSON.parse(localStorage.getItem('monitoringForms') || '[]');
-        setStoredForms(savedForms);
+        // setStoredForms(savedForms);
 
         if (id) {
             const formToEdit = savedForms.find(f => f.id === id);
@@ -69,7 +69,7 @@ export default function Reports() {
         }
 
         localStorage.setItem('monitoringForms', JSON.stringify(updatedForms));
-        setStoredForms(updatedForms);
+        // setStoredForms(updatedForms);
 
         setModalMessage(id ? 'Форма успешно отредактирована!' : 'Форма успешно добавлена!');
         setShowModal(true);

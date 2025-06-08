@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import buttonIcon from '../../images/icons/monitoring-button.svg';
@@ -7,13 +6,12 @@ import MonitoringModal from '../MonitoringModal/MonitoringModal';
 
 import './Monitoring.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_API || 'http://127.0.0.1:8000';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_API;
 
 export default function Monitoring() {
-  const navigate = useNavigate();
-  const [countFilters, setCountFilters] = useState(5);
+  // const [countFilters, setCountFilters] = useState(5);
   const [countVacancies, setCountVacancies] = useState(12);
-  const [countCandidats, setCountCandidats] = useState(8);
+  // const [countCandidats, setCountCandidats] = useState(8);
   const [openMonitoringModal, setOpenMonitoringModal] = useState(false);
   const [forms, setForms] = useState([]);
   const [selectedPosition, setSelectedPosition] = useState(null);
@@ -21,7 +19,6 @@ export default function Monitoring() {
   const [salaryStats, setSalaryStats] = useState(null);
   const [topKeywords, setTopKeywords] = useState(null);
   const [topDescriptionWords, setTopDescriptionWords] = useState(null);
-
 
   // Для анимации текста загрузки
   const loadingTexts = [
@@ -40,34 +37,34 @@ export default function Monitoring() {
 
   // При смене выбранной позиции загружаем график
   useEffect(() => {
-  if (!selectedPosition) return;
+    if (!selectedPosition) return;
 
-  setChartImages([]);  // сбросить перед загрузкой
+    setChartImages([]);
 
-  fetch(
-    `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
-    { headers: { accept: 'application/json' } }
-  )
-    .then(res => res.json())
-    .then(data => {
-      if (data?.plot_images) {
-        const images = Object.entries(data.plot_images).map(([name, base64]) => ({
-          name,
-          src: `data:image/png;base64,${base64}`
-        }));
-        setChartImages(images);
-      }
+    fetch(
+      `${joinUrl(BACKEND_URL, 'get_statistics')}?text=${encodeURIComponent(selectedPosition)}&area=1&per_page=50&refresh=false&include_plots=true`,
+      { headers: { accept: 'application/json' } }
+    )
+      .then(res => res.json())
+      .then(data => {
+        if (data?.plot_images) {
+          const images = Object.entries(data.plot_images).map(([name, base64]) => ({
+            name,
+            src: `data:image/png;base64,${base64}`
+          }));
+          setChartImages(images);
+        }
 
-      setCountVacancies(data.vacancy_count || 0);
-      setSalaryStats(data.salary_stats || null);
-      setTopKeywords(data.top_keywords || null);
-      setTopDescriptionWords(data.top_description_words || null);
-    })
-    .catch(err => {
-      console.error('Ошибка при получении статистики:', err);
-    });
+        setCountVacancies(data.vacancy_count || 0);
+        setSalaryStats(data.salary_stats || null);
+        setTopKeywords(data.top_keywords || null);
+        setTopDescriptionWords(data.top_description_words || null);
+      })
+      .catch(err => {
+        console.error('Ошибка при получении статистики:', err);
+      });
 
-}, [selectedPosition]);
+  }, [selectedPosition]);
 
 
   // Загрузка форм из localStorage при монтировании
@@ -82,13 +79,13 @@ export default function Monitoring() {
 
   // Анимация смены текста загрузки
   useEffect(() => {
-    if (chartImages.length > 0) return; // остановить анимацию, когда график загружен
+    if (chartImages.length > 0) return;
 
     const interval = setInterval(() => {
-      setFade(false); // начинаем исчезать текст
+      setFade(false);
       setTimeout(() => {
         setLoadingTextIndex((prev) => (prev + 1) % loadingTexts.length);
-        setFade(true);  // показываем следующий текст
+        setFade(true);
       }, 500);
     }, 3000);
 
@@ -126,33 +123,31 @@ export default function Monitoring() {
         </button>
 
         <div className='monitoring__info-group'>
-          <span className='monitoring__info-item'>Фильтры: {countFilters}</span>
+          <span className='monitoring__info-item'>Фильтры: 8</span>
           <span className='monitoring__info-item'>Вакансии: {countVacancies}</span>
-          <span className='monitoring__info-item'>Кандидаты: {countCandidats}</span>
+          <span className='monitoring__info-item'>Кандидаты: 5</span>
         </div>
       </div>
 
       <div className='monitoring__content'>
-  {chartImages.length > 0 ? (
-    chartImages.map((img, idx) => (
-      <img
-        key={img.name || idx}
-        src={img.src}
-        alt={`График: ${img.name}`}
-        className='monitoring__chart'
-      />
-    ))
-  ) : (
-    <div className='loading__container'>
-      <div className="monitoring__spinner" aria-label="Загрузка графика"></div>
-      <span className={`loading-text ${fade ? 'fade-in' : 'fade-out'}`}>
-        {loadingTexts[loadingTextIndex]}
-      </span>
-    </div>
-  )}
-</div>
-
-
+        {chartImages.length > 0 ? (
+          chartImages.map((img, idx) => (
+            <img
+              key={img.name || idx}
+              src={img.src}
+              alt={`График: ${img.name}`}
+              className='monitoring__chart'
+            />
+          ))
+        ) : (
+          <div className='loading__container'>
+            <div className="monitoring__spinner" aria-label="Загрузка графика"></div>
+            <span className={`loading-text ${fade ? 'fade-in' : 'fade-out'}`}>
+              {loadingTexts[loadingTextIndex]}
+            </span>
+          </div>
+        )}
+      </div>
       {openMonitoringModal && (
         <MonitoringModal
           forms={modalForms}
@@ -163,7 +158,7 @@ export default function Monitoring() {
 
       {salaryStats && chartImages.length > 0 ? (
         <div className='monitoring__section'>
-          <h3 className='monitoring__subtitle'>💰 Статистика зарплат</h3>
+          <h3 className='monitoring__subtitle'>Статистика зарплат</h3>
           <div className='monitoring__cards'>
             <div className='monitoring__card'>
               <span className='monitoring__card-label'>Минимум</span>

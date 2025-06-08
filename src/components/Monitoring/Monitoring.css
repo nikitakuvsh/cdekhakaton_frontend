@@ -1,84 +1,116 @@
 .monitoring {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 .monitoring__controls {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .monitoring__toggle-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
 }
 
 .monitoring__toggle-icon {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
 }
 
 .monitoring__info-group {
-    display: flex;
-    gap: 1rem;
-    font-size: 1rem;
-    color: #333;
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  color: #333;
 }
 
 .monitoring__info-item {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .monitoring__content {
-    min-height: 200px;
-    background-color: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    padding: 1rem;
+  min-height: 200px;
+  background-color: #fefefe;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.monitoring__chart {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.monitoring__chart:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .monitoring__spinner {
-    margin: 40px auto;
-    width: 48px;
-    height: 48px;
-    border: 5px solid #cfd0d1;
-    border-top-color: #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  margin: 40px auto;
+  width: 48px;
+  height: 48px;
+  border: 5px solid #cfd0d1;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .loading__container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .loading-text {
-    display: inline-block;
-    margin-left: 10px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: opacity 0.5s ease;
-    opacity: 1;
-    user-select: none;
+  display: inline-block;
+  margin-left: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+  user-select: none;
 }
 
 .loading-text.fade-out {
-    opacity: 0;
+  opacity: 0;
 }
 
 .loading-text.fade-in {
-    opacity: 1;
+  opacity: 1;
 }
 
 .monitoring__section {
@@ -102,7 +134,7 @@
   background-color: #f9f9f9;
   padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   text-align: center;
 }
 
@@ -134,7 +166,7 @@
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .monitoring__tag-count {
@@ -187,18 +219,16 @@
   border-radius: 12px;
 }
 
-/* Скелетон-блок */
 .skeleton {
   background-color: #e0e0e0;
   border-radius: 8px;
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 300px; /* высота графика */
+  height: 300px;
   margin-bottom: 16px;
 }
 
-/* Анимация shimmer */
 .skeleton::after {
   content: '';
   position: absolute;
@@ -219,18 +249,26 @@
   }
 }
 
-
 @media (max-width: 768px) {
-    .monitoring {
-        padding: 10px;
-        padding-top: 2rem;
-    }
+  .monitoring {
+    padding: 1rem;
+    padding-top: 2rem;
+  }
 
-    .monitoring__info-item {
-        font-size: 12px;
-    }
+  .monitoring__info-item {
+    font-size: 12px;
+  }
 
-    .monitoring__controls {
-        gap: 0.3rem;
-    }
+  .monitoring__controls {
+    gap: 0.3rem;
+  }
+
+  .monitoring__content {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+
+  .monitoring__chart {
+    margin-bottom: 16px;
+  }
 }
